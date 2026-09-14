@@ -1,0 +1,38 @@
+NOTICE
+======
+
+Savante Automation Consultant Service
+Copyright (c) 2026 Savante
+
+This product includes software developed by Savante, licensed under the MIT
+License (see LICENSE).
+
+
+What this repository contains
+-----------------------------
+
+This repository contains the recommendation engine only: source code, database
+migrations, and documentation, all authored by Savante.
+
+
+What this repository does NOT contain
+-------------------------------------
+
+No third-party content is redistributed here. Specifically, this repository does
+not include, and must not be used to publish:
+
+  - the workflow definitions, documentation, or source code of any third-party
+    project;
+  - the corpus that the engine indexes (it is held locally and `data/` is
+    gitignored); or
+  - any catalog, index, manifest, or other metadata derived from that corpus,
+    including item names, categories, URLs, licenses, counts, and file paths.
+
+The ingestion scripts are designed to run against a corpus that you supply and
+hold yourself. Anything they produce (`out/catalog.json`, `out/stats.json`, and
+the rows loaded into your database) is derived from your corpus and stays on
+your infrastructure.
+
+If you point this engine at third-party material, you are responsible for
+complying with the licenses of that material. Aggregating or indexing a source
+does not grant you the right to redistribute it.

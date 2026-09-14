@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Large local data corpus (~14k workflow JSON files, ~900 MB) — use manifests/ for structure + stats
+data/
+
+# Agency GTM / marketing playbooks — keep locally, never publish
+docs/private/

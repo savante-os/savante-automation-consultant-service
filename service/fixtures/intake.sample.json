@@ -1,0 +1,21 @@
+{
+  "company": "Talento Norte Staffing",
+  "niche": "recruiting",
+  "country": "México",
+  "city": "Monterrey",
+  "team_size": "12",
+  "contact_name": "Mariana",
+  "email": "mariana@example.com",
+  "pain_primary": "Procesamos a mano cientos de CVs que llegan por email; los reclutadores pierden horas leyendo y clasificando en vez de entrevistar, y se enfrían buenos candidatos.",
+  "pain_volume": "~200 por semana",
+  "pain_time_each": "10 min",
+  "pain_cost": "se pierden candidatos",
+  "current_tools": ["Gmail", "Google Sheets"],
+  "input_channels": ["email"],
+  "output_targets": ["Google Sheets", "Slack"],
+  "hosting_pref": "no-importa",
+  "wants_ai": "ia",
+  "urgency": "ya",
+  "budget_band": "600-1200",
+  "decision_role": "dueño"
+}

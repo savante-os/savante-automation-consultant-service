@@ -1,0 +1,25 @@
+{
+  "name": "savante-automation-service",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Standalone prototype of the Savante automation recommendation service (ingestion + faceted retrieval harness).",
+  "scripts": {
+    "ingest": "tsx scripts/ingest.ts",
+    "query": "tsx scripts/query.ts",
+    "embed": "tsx scripts/embed.ts",
+    "recommend": "tsx --env-file-if-exists=.env scripts/recommend.ts",
+    "load-supabase": "tsx --env-file-if-exists=.env scripts/load-supabase.ts",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "@xenova/transformers": "^2.17.2"
+  }
+}
