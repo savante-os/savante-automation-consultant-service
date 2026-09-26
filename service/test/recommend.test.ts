@@ -29,7 +29,7 @@ function wf(id: string, name: string): CatalogRecord {
   return {
     id, source: "curated", name, category: "Gmail", path: `${id}.json`,
     import_ref: `https://n8n.io/workflows/${id}`, popularity: 1, description: "",
-    integrations: ["Gmail"], trigger_type: ["email"], has_ai: true, is_rag: false,
+    integrations: ["Gmail"], trigger_type: ["email"], output_targets: [], has_ai: true, is_rag: false,
     tags: [], license: null, stack: null, unmaintained: false, content: "",
   };
 }

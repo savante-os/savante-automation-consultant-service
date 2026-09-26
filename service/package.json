@@ -11,6 +11,8 @@
     "embed": "tsx scripts/embed.ts",
     "recommend": "tsx --env-file-if-exists=.env scripts/recommend.ts",
     "load-supabase": "tsx --env-file-if-exists=.env scripts/load-supabase.ts",
+    "issue-mcp-key": "tsx --env-file-if-exists=.env scripts/issue-mcp-key.ts",
+    "eval-mcp": "tsx --env-file-if-exists=.env scripts/eval-mcp.ts",
     "test": "node --import tsx --test test/*.test.ts"
   },
   "devDependencies": {

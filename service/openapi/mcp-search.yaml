@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: Savante catalog search
+  version: "1.0.0"
+  description: >
+    Authenticated search over Savante's n8n + self-hosted catalog.
+    Use as Custom GPT Actions (Bearer API key). Same HTTP API the MCP wrapper calls.
+    Do not send the Supabase service_role key here.
+servers:
+  - url: https://YOUR_PROJECT.supabase.co/functions/v1/catalog-search
+    description: Placeholder — replace with the deployed function URL
+security:
+  - bearerAuth: []
+paths:
+  /v1/search/automations:
+    post:
+      operationId: search_automations
+      summary: Find n8n-oriented automations for a business pain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pain]
+              properties:
+                pain:
+                  type: string
+                  description: Natural-language description of the work to automate
+                tools:
+                  type: array
+                  items: { type: string }
+                  description: Integrations already in use (Gmail, Slack, …)
+                channels:
+                  type: array
+                  items: { type: string }
+                  description: Input channels (email, form, webhook, …)
+                wants_ai:
+                  type: string
+                  enum: [none, ia, rag]
+                limit:
+                  type: integer
+                  default: 8
+                  maximum: 12
+      responses:
+        "200":
+          description: Catalog hits (summaries + refs, not full workflow JSON)
+        "401":
+          description: Missing or unknown API key
+        "403":
+          description: Revoked key
+        "429":
+          description: Daily quota exceeded
+  /v1/search/software:
+    post:
+      operationId: search_software
+      summary: Find self-hosted software for a pain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pain]
+              properties:
+                pain: { type: string }
+                category: { type: string }
+                limit: { type: integer, default: 6, maximum: 6 }
+      responses:
+        "200":
+          description: Software hits
+  /v1/templates/{id}:
+    get:
+      operationId: get_template
+      summary: Fetch one catalog row by id (public fields only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Public catalog fields
+        "404":
+          description: Unknown id
+  /v1/categories:
+    get:
+      operationId: list_categories
+      summary: List catalog categories with item counts
+      responses:
+        "200":
+          description: Distinct categories + counts
+  /v1/recommend:
+    post:
+      operationId: recommend_automation
+      summary: Get a discovery recommendation (no pricing) for a business problem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [problem_description]
+              properties:
+                problem_description:
+                  type: string
+                  description: The problem/pain in the caller's own words
+      responses:
+        "200":
+          description: Summary + matched workflows/software (no tier or price_estimate)
+        "401":
+          description: Missing or unknown API key
+        "403":
+          description: Revoked key
+        "429":
+          description: Daily quota exceeded (recommend_automation has its own bucket)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: sav_live_… key issued by Savante. Also accepted as X-Api-Key.

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "savante-catalog": {
+      "url": "https://YOUR_PROJECT.supabase.co/functions/v1/catalog-search/mcp",
+      "headers": {
+        "Authorization": "Bearer sav_live_YOUR_KEY"
+      }
+    }
+  }
+}

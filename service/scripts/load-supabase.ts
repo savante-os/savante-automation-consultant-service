@@ -43,10 +43,20 @@ async function main() {
     }
   }
 
+  let summaryMap = new Map<string, string>();
+  try {
+    const summaries: { id: string; summary: string }[] = JSON.parse(await readFile(resolve(OUT, "summaries.json"), "utf8"));
+    summaryMap = new Map(summaries.map((s) => [s.id, s.summary]));
+    console.log(`  ${summaryMap.size} summaries cargados`);
+  } catch {
+    // out/summaries.json es opcional: [{ id, summary }] con un resumen por template (si existe)
+  }
+
   const rows = catalog.map((r) => ({
     id: r.id, source: r.source, name: r.name, category: r.category,
     tags: r.tags, integrations: r.integrations, trigger_type: r.trigger_type,
-    has_ai: r.has_ai, is_rag: r.is_rag, description: r.description,
+    output_targets: r.output_targets, has_ai: r.has_ai, is_rag: r.is_rag,
+    description: r.description, summary: summaryMap.get(r.id) ?? null,
     import_ref: r.import_ref ?? r.id, popularity: r.popularity, content: r.content,
     license: r.license, stack: r.stack, unmaintained: r.unmaintained,
     embedding: embMap.get(r.id) ?? null,

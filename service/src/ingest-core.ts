@@ -18,6 +18,7 @@ export interface CatalogRecord {
   // facets
   integrations: string[];
   trigger_type: string[];
+  output_targets: string[];
   has_ai: boolean;
   is_rag: boolean;
   tags: string[];
@@ -86,6 +87,7 @@ export function toRecord(relPath: string, raw: any): CatalogRecord | null {
       description,
       integrations: [],
       trigger_type: [],
+      output_targets: [],
       has_ai: false,
       is_rag: false,
       tags,
@@ -128,6 +130,7 @@ export function toRecord(relPath: string, raw: any): CatalogRecord | null {
     description,
     integrations: f.integrations,
     trigger_type: f.triggerChannels,
+    output_targets: f.outputTargets,
     has_ai: f.hasAi,
     is_rag: f.isRag,
     tags: [...new Set(tags)],

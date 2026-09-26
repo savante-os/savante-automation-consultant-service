@@ -39,18 +39,27 @@ const TRIGGER_CHANNEL: Record<string, string> = {
 const NAME_ALIASES: Record<string, string> = {
   googleSheets: "Google Sheets", googleSheetsTool: "Google Sheets",
   googleDrive: "Google Drive", googleCalendar: "Google Calendar",
-  googleDocs: "Google Docs", gmail: "Gmail", facebookGraphApi: "Facebook",
-  facebookLeadAds: "Facebook Lead Ads", whatsApp: "WhatsApp",
-  microsoftOutlook: "Outlook", microsoftExcel: "Excel", microsoftTeams: "Teams",
-  hubspot: "HubSpot", wooCommerce: "WooCommerce", wordpress: "WordPress",
-  openAi: "OpenAI", postgres: "Postgres", mySql: "MySQL", redis: "Redis",
+  googleCalendarTool: "Google Calendar", googleDocs: "Google Docs",
+  googleDocsTool: "Google Docs", gmail: "Gmail", gmailTool: "Gmail",
+  facebookGraphApi: "Facebook", facebookLeadAds: "Facebook Lead Ads",
+  whatsApp: "WhatsApp", telegram: "Telegram", telegramTool: "Telegram",
+  microsoftOutlook: "Outlook", microsoftOutlookTool: "Outlook",
+  microsoftExcel: "Excel", microsoftTeams: "Teams", microsoftOneDrive: "Microsoft One Drive",
+  hubspot: "HubSpot", wooCommerce: "WooCommerce", wooCommerceTool: "WooCommerce",
+  wordpress: "WordPress", openAi: "OpenAI", postgres: "Postgres", postgresTool: "Postgres",
+  mySql: "MySQL", mySqlTool: "MySQL", redis: "Redis",
   clickUp: "ClickUp", bambooHr: "BambooHR", quickbooks: "QuickBooks",
   pipedrive: "Pipedrive", salesforce: "Salesforce", airtable: "Airtable",
-  notion: "Notion", slack: "Slack", telegram: "Telegram", stripe: "Stripe",
-  shopify: "Shopify", twilio: "Twilio", zendesk: "Zendesk", jira: "Jira",
-  github: "GitHub", gitlab: "GitLab", supabase: "Supabase", mongoDb: "MongoDB",
+  airtableTool: "Airtable", notion: "Notion", notionTool: "Notion",
+  slack: "Slack", stripe: "Stripe", shopify: "Shopify", twilio: "Twilio",
+  zendesk: "Zendesk", jira: "Jira", jiraTool: "Jira", github: "GitHub",
+  gitlab: "GitLab", supabase: "Supabase", mongoDb: "MongoDB", mongoDbTool: "MongoDB",
   linkedIn: "LinkedIn", youTube: "YouTube", googleBigQuery: "BigQuery",
   awsS3: "AWS S3", microsoftSql: "MS SQL", emailSend: "Email", spotify: "Spotify",
+  discord: "Discord", trello: "Trello", baserow: "Baserow", baserowTool: "Baserow",
+  nocoDb: "Noco Db", wordpressTool: "WordPress", monday: "Monday Com",
+  mondayCom: "Monday Com", reddit: "Reddit", twitter: "Twitter", linkedInTool: "LinkedIn",
+  webflow: "Webflow", strava: "Strava", zoom: "Zoom",
 };
 
 function titleize(s: string): string {
@@ -64,9 +73,25 @@ function parseType(type: string): { kind: "base" | "langchain" | "other"; base: 
   return { kind: "other", base: type };
 }
 
+/** Non-trigger node base name -> canonical business output/destination channel. */
+const SINK_CHANNEL: Record<string, string> = {
+  googleSheets: "spreadsheet", microsoftExcel: "spreadsheet", spreadsheetFile: "spreadsheet",
+  airtable: "spreadsheet", baserow: "spreadsheet", nocoDb: "spreadsheet",
+  gmail: "email", microsoftOutlook: "email", emailSend: "email", emailReadImap: "email",
+  sendGrid: "email", mailjet: "email", mailerLite: "email",
+  slack: "chat", telegram: "chat", discord: "chat", whatsApp: "chat",
+  mattermost: "chat", teams: "chat", microsoftTeams: "chat",
+  postgres: "database", mySql: "database", mongoDb: "database", supabase: "database",
+  redis: "database", mssql: "database", microsoftSql: "database", snowflake: "database",
+  hubspot: "crm", pipedrive: "crm", salesforce: "crm", zohoCrm: "crm", copper: "crm",
+  googleDocs: "document", notion: "document", confluence: "document", googleSlides: "document",
+  twilio: "notification", pushover: "notification", pagerDuty: "notification",
+};
+
 export interface NodeFacets {
   integrations: string[];   // friendly app names (no plumbing, no triggers)
   triggerChannels: string[]; // canonical input channels
+  outputTargets: string[];   // canonical output/destination channels
   hasAi: boolean;
   isRag: boolean;
 }
@@ -75,6 +100,7 @@ export interface NodeFacets {
 export function facetsFromNodeTypes(types: string[]): NodeFacets {
   const integrations = new Set<string>();
   const channels = new Set<string>();
+  const outputs = new Set<string>();
   let hasAi = false;
   let isRag = false;
 
@@ -103,6 +129,7 @@ export function facetsFromNodeTypes(types: string[]): NodeFacets {
     if (base === "openAi") { hasAi = true; }
     // Normalize the "...Tool" variants (e.g. googleSheetsTool -> googleSheets)
     const norm = base.length > 4 && base.endsWith("Tool") ? base.slice(0, -4) : base;
+    if (norm in SINK_CHANNEL) outputs.add(SINK_CHANNEL[norm]);
     if (PLUMBING.has(norm)) continue;
 
     integrations.add(NAME_ALIASES[norm] ?? titleize(norm));
@@ -111,6 +138,7 @@ export function facetsFromNodeTypes(types: string[]): NodeFacets {
   return {
     integrations: [...integrations].sort(),
     triggerChannels: [...channels].sort(),
+    outputTargets: [...outputs].sort(),
     hasAi,
     isRag,
   };
